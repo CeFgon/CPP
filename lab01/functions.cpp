@@ -45,6 +45,46 @@ double mean(double array[], int numElements) {
     }
 }
 
-double stddev(double array[], int numElements); {
+double stddev(double array[], int numElements) {
+    if (numElements <= 0) {
+        return NAN;
+    }
 
+    double arrayMean = mean(array, numElements);
+
+    double sqDiffSum = 0.0;
+    for (int i = 0; i < numElements; i++) {
+        double diff = array[i] - arrayMean;
+        sqDiffSum += diff * diff;
+    }
+
+    double variance = sqDiffSum / numElements;
+
+    return sqrt(variance);
+}
+
+std::pair<double, double> max2(double array[], int numElements) {
+    std::pair<double, double> maxNrs;
+    maxNrs.first = 0;
+    maxNrs.second = 0;
+    if (numElements <= 0) {
+        maxNrs.first = NAN;
+        maxNrs.second = NAN;
+    }
+    else if (numElements == 1) {
+        maxNrs.first = array[0];
+        maxNrs.second = array[0];
+    }
+    else {
+        for (int i = 0; i < numElements; i++) {
+            if (array[i] > maxNrs.first) {
+                maxNrs.second = maxNrs.first;
+                maxNrs.first = array[i];
+            }
+            else if (array[i] > maxNrs.second) {
+                maxNrs.second = array[i];
+            }
+        }
+    }
+    return maxNrs;
 }

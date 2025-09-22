@@ -32,6 +32,15 @@ int main() {
     cout << "Mean: " << mean(array,numElemofArray);
     */
     //4. feladat
-
+    /*
+    double array[] = {1.5,2.3,4.5};
+    int numElemofArray = 3;
+    cout << "Standard Deviation: " << stddev(array,numElemofArray);
+    */
+    //5. feladat
+    double array[] = {1.5,2.3,4.5};
+    int numElemofArray = 3;
+    std::pair<double, double> maxElements = max2(array, numElemofArray);
+    cout << "Maximum elements(2): " << maxElements.first << ", " <<maxElements.second;
     return 0;
 }
