@@ -6,8 +6,8 @@
 //git push
 
 #include "functions.h"
-#include <iostream>
-#include <cmath>
+
+#include <algorithm>
 
 using namespace std;
 
@@ -87,4 +87,43 @@ std::pair<double, double> max2(double array[], int numElements) {
         }
     }
     return maxNrs;
+}
+
+int countWords(std::string text) {
+    int nrWords = 0;
+    istringstream inputstream(text);
+    string word;
+    while(inputstream >> word){
+        istringstream wordstream(word);
+        nrWords++;
+    }
+    return nrWords;
+}
+
+string code(string text) {
+    for (int i = 0; i < text.length(); i++) {
+        if ((text[i] >= 'a' && text[i] <= 'z') || (text[i] >= 'A' && text[i] <= 'Z')) {
+            if (text[i] == 'z') {
+                text[i] = 'a';
+            }
+            else if (text[i] == 'Z') {
+                text[i] = 'A';
+            }
+            else {
+                text[i] = text[i]+1;
+            }
+        }
+    }
+    return text;
+}
+
+std::string capitalizeWords(std::string text) {
+    for (int i = 0; i < text.length(); i++) {
+        if (text[i] >= 'a' && text[i] <= 'z') {
+            if (i == 0 || text[i-1] == ' ') {
+                text[i] = toupper(text[i]);
+            }
+        }
+    }
+    return text;
 }
