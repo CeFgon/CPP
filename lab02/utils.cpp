@@ -2,82 +2,44 @@
 // Created by cefgo on 24/09/2025.
 //
 
-//BEFEJEZNI JOVOHET VASARNAPIG
-
 #include "utils.h"
 
-#include <algorithm>
-
-#include "point.h"
-#include <cmath>
-#include <fstream>
-#include <random>
 using namespace std;
 
 double distance(const Point& a, const Point& b){
     return sqrt(pow((b.getX() - a.getX()),2) + pow((b.getY() - a.getY()),2));
 }
 
-//Kibogozni
-//->
-/*
-bool isSquare(const Point& a, const Point& b, const Point& c, const Point& d) {
-    int d1 = distance(a,b);
-    int d2 = distance(a,c);
-    int d3 = distance(a,d);
-    int d4 = distance(b,c);
-    int d5 = distance(b,d);
-    int d6 = distance(c,d);
-
-    if (distance(a,b) == distance(c,d) == distance(b,c) == distance(a,d)) {
-        if (distance(b,d) == distance(a,c)) {
-            return true;
-        }
-    }
-    if (distance(a,b) == distance(c,d) == distance(a,c) == distance(b,d)) {
-        if (distance(a,d) == distance(c,b)) {
-            return true;
-        }
-    }
-    if (distance(a,d) == distance(c,b) == distance(a,c) == distance(d,b)) {
-        if (distance(a,b) == distance(c,d)) {
-            return true;
-        }
-    }
-    if (distance(d,a) == distance(b,c) == distance(b,d) == distance(a,c)) {
-        if (distance(d,c) == distance(b,a)) {
-            return true;
-        }
-    }
-    return false;
+bool isSquare(const Point &a, const Point &b, const Point &c, const Point &d) {
+    double t[6]{
+            distance(a,b), distance(a,c), distance(a,d), distance(b,c), distance(b,d), distance(c,d)
+    };
+    std::sort(t,t+6);
+    return t[0] == t[3] && t[4] == t[5] && t[3] < t[5];
 }
 
-void testIsSquare(const char * filename) {
-    std::ifstream f(filename);
-    if (!f.is_open()) {
-        exit(404);
+void testIsSquare(const char *filename) {
+    std:: ifstream in (filename);
+    if(! in) {
+    std::cout<<"Couldn't open file :(."<<std::endl;
+        return;
     }
-    for (int i=0; i < 8; i++) {
+    std::string line;
+    while(std::getline(in,line))
+    {
+        std::stringstream ss(line);
         int x1,x2,x3,x4,y1,y2,y3,y4;
-        f>>x1>>y1>>x2>>y2>>x3>>y3>>x4>>y4;
-        Point p1(x1,y1);
-        Point p2(x2,y2);
-        Point p3(x3,y3);
-        Point p4(x4,y4);
-        p1.print();
-        p2.print();
-        p3.print();
-        p4.print();
-        if (isSquare(p1,p2,p3,p4) == true) {
-            cout<<"KOCKA"<<endl;
+        ss>>x1>>y1>>x2>>y2>>x3>>y3>>x4>>y4;
+        if (isSquare(Point(x1,y1),Point(x2,y2),Point(x3,y3),Point(x4,y4)))
+        {
+            std::cout<<"Square "<< line<< std::endl;
         }
-        else {
-            cout<<"NEM KOCKA"<<endl;
+        else{
+            std::cout<<"No square "<<line<<std::endl;
         }
     }
+    in.close();
 }
-*/
-// <-
 
 Point* createArray(int numPoints) {
     std::random_device rd;
@@ -92,41 +54,94 @@ Point* createArray(int numPoints) {
 }
 
 void printArray(Point* points, int numPoints) {
-    for (int i=0; i < numPoints; i++) {
+    for (int i = 0; i < numPoints; ++i) {
+        std::cout << "Point " << i << ": ";
         points[i].print();
     }
 }
 
-pair<Point, Point> closestPoints(Point* points, int numPoints) {
-    int minimum = INT_MAX;
-    Point x,y;
-    for (int i = 0; i < numPoints; i++) {
-        for (int j = 0; j < numPoints; j++) {
-            if (distance(points[i],points[j]) < minimum) {
-                minimum = distance(points[i],points[j]);
-                x = points[i];
-                y = points[j];
+std::pair<Point, Point> closestPoints(Point *points, int numPoints) {
+    if(numPoints < 2) {
+        throw std::invalid_argument("Not enough points in the array, need at least 2");
+    }
+    double minDist = distance(points[0], points[1]);
+    std::pair<Point, Point> result(points[0], points[1]);
+    for (int i = 0; i < numPoints; ++i) {
+        for (int j = i + 1; j < numPoints; ++j) {
+            double d = distance(points[i], points[j]);
+            if (d < minDist) {
+                minDist = d;
+                result = { points[i], points[j] };
             }
         }
     }
-    return make_pair(x,y);
+    return result;
 }
 
-pair<Point, Point> farthestPoints(Point* points, int numPoints) {
-    int maximum = 0;
-    Point x,y;
-    for (int i = 0; i < numPoints; i++) {
-        for (int j = 0; j < numPoints; j++) {
-            if (distance(points[i],points[j]) > maximum) {
-                maximum = distance(points[i],points[j]);
-                x = points[i];
-                y = points[j];
+std::pair<Point, Point> farthestPoints(Point *points, int numPoints) {
+    if (numPoints < 2) {
+        throw std::invalid_argument("Need at least 2 points");
+    }
+
+    double maxDist = distance(points[0], points[1]);
+    std::pair<Point, Point> result(points[0], points[1]);
+
+    for (int i = 0; i < numPoints; ++i) {
+        for (int j = i + 1; j < numPoints; ++j) {
+            double d = distance(points[i], points[j]);
+            if (d > maxDist) {
+                maxDist = d;
+                result = { points[i], points[j] };
             }
         }
     }
-    return make_pair(x,y);
+    return result;
 }
 
-void sortPoints(Point* points, int numPoints) {
-    sort(points,points+numPoints,[](const Point& a,const Point& b){return b.getX() > a.getX();});
+void sortPoints(Point *points, int numPoints) {
+    std::sort(points, points + numPoints, [](const Point& a, const Point& b) {
+           if (a.getX() == b.getX())
+               return a.getY() < b.getY();
+           return a.getX() < b.getX();
+       });
+}
+
+double distanceFromOrigin(const Point& p) {
+    return std::sqrt(p.getX()*p.getX() + p.getY()*p.getY());
+}
+
+Point* farthestPointsFromOrigin(Point* points, int numPoints) {
+    if (numPoints == 0) return nullptr;
+
+    // find max distance
+    double maxDist = distanceFromOrigin(points[0]);
+    for (int i = 1; i < numPoints; ++i) {
+        double d = distanceFromOrigin(points[i]);
+        if (d > maxDist) {
+            maxDist = d;
+        }
+    }
+
+    // count how many points match maxDist
+    int count = 0;
+    for (int i = 0; i < numPoints; ++i) {
+        if (std::abs(distanceFromOrigin(points[i]) - maxDist) < 1e-9) {
+            count++;
+        }
+    }
+
+    // allocate and fill result array
+    Point* result = new Point[count];
+    int idx = 0;
+    for (int i = 0; i < numPoints; ++i) {
+        if (std::abs(distanceFromOrigin(points[i]) - maxDist) < 1e-9) {
+            result[idx++] = points[i];
+        }
+    }
+
+    return result;
+}
+
+void deletePoints(Point *points) {
+    delete[] points;
 }

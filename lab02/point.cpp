@@ -2,6 +2,8 @@
 // Created by cefgo on 24/09/2025.
 //
 
+#include <iostream>
+
 #include "point.h"
 
 Point::Point(int x, int y) {
@@ -22,5 +24,5 @@ int Point::getY() const {
 }
 
 void Point::print() const {
-    std::cout<<x<<" "<<y<<std::endl;
+    std::cout<<"x component: "<<this->getX()<<" y component: " <<this->getY()<<std::endl;
 }
