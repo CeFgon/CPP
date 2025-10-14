@@ -17,7 +17,7 @@ class Polynomial {
 public:
     Polynomial(int degree, const double coefficients[]);
     Polynomial(const Polynomial &that);
-    ~Polynomial();
+    ~Polynomial() = default;
     // Polinom fokszáma
     int degree() const;
     // Polinom értéke a megadott pontban

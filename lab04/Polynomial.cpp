@@ -21,11 +21,9 @@ Polynomial::Polynomial(const Polynomial &that) {
     }
 }
 
-Polynomial::~Polynomial() {
-    this -> capacity = 0;
-    delete[] this -> coefficients;
-    this -> coefficients = nullptr;
-}
+/*Polynomial::~Polynomial() {
+   delete [] coefficients;
+}*/
 
 int Polynomial::degree() const {
     return this -> capacity - 1;
@@ -112,12 +110,17 @@ Polynomial operator-(const Polynomial &a, const Polynomial &b) {
 
 Polynomial operator*(const Polynomial &a, const Polynomial &b) {
     double* newCoefficients = new double[a.capacity - 1];
-    Polynomial newPoly(a.capacity - 1, newCoefficients);
+    for (int i = 0; i <= a.degree(); ++i) {
+        for (int j = 0; j <= b.degree(); ++j) {
+            newCoefficients[i + j] += a.coefficients[i] * b.coefficients[j];
+        }
+    }
+    Polynomial newPoly(a.degree()+b.degree(), newCoefficients);
     delete[] newCoefficients;
     return newPoly;
 }
 
-ostream & operator<<(ostream &out, const Polynomial &what) {
+ostream& operator<<(ostream &out, const Polynomial &what) {
     out << "P(x) = ";
     for (int i = 0; i < what.capacity - 1; i++) {
         out << what.coefficients[i] << "X^" << (what.capacity - i - 1) << "+";
