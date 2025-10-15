@@ -16,9 +16,11 @@ Point::Point(int x, int y) {
         this->y = 0;
     }
 }
+
 int Point::getX() const {
     return x;
 }
+
 int Point::getY() const {
     return y;
 }
