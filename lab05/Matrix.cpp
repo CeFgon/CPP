@@ -53,10 +53,10 @@ void Matrix::fillMatrix(double value) {
 void Matrix::randomMatrix(int a, int b) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> distribute(a,b);
-    for (int i = 0;i<this->mRows;i++) {
-        for (int j=0;j<this->mCols;j++) {
-            //kene ide valami
+    std::uniform_real_distribution<double> dist(a,b);
+    for (int i = 0; i < this->mRows; i++) {
+        for (int j = 0;j < this->mCols; j++) {
+            this->mElements[i*mCols+j] = dist(gen);
         }
     }
 }
@@ -110,17 +110,20 @@ Matrix operator+(const Matrix &x, const Matrix &y) {
 }
 
 Matrix operator*(const Matrix &x, const Matrix &y) {
+    if (x.mRows != y.mCols) {
+        throw std::out_of_range("The rows of x are not equal to the cols of y.");
+    }
     vector<double> mult;
-    mult.resize(x.mCols*x.mRows,0);
-    for (int i=0;i< x.mRows;i++) {
-        for (int j=0;j< x.mCols;j++) {
-            for (int k=0;k<x.mCols;k++) {
-                mult[i*x.mCols + j] += (*x[i*x.mCols+k]) * (*y[k*x.mCols+j]);
+    mult.resize(y.mCols * x.mRows,0);
+    for (int i = 0;i < x.mRows;i++) {
+        for (int j = 0;j < y.mCols;j++) {
+            for (int k = 0;k < x.mCols;k++) {
+                mult[i * y.mCols + j] += x.mElements[i * x.mCols + k] * y.mElements[k * y.mCols + j];
             }
         }
     }
-    Matrix newMatrix(x.mCols,x.mRows);
-    newMatrix.mElements=mult;
+    Matrix newMatrix(x.mRows,y.mCols);
+    newMatrix.mElements = mult;
     return newMatrix;
 }
 

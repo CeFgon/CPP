@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <random>
 
- using namespace std;
+using namespace std;
 
 class Matrix {
 public:
